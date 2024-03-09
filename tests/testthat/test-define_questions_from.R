@@ -10,7 +10,31 @@ test_that("define_questions_from", {
     question_category(category = 'Initial test', adapt_images = TRUE) |>
     define_questions_from_csv(file = file)
 
+  file3 <- system.file("extdata", "questions.xlsx", package = "moodef")
+  df3 <- read_question_excel(file = file3)
+  names(df3) <- names(df)
+
+  df4 <- read_question_excel(file = file3, sheet_name = 'Hoja1')
+  names(df4) <- names(df)
+
+  df5 <- read_question_excel(file = file3, sheet_index = 1)
+  names(df5) <- names(df)
+
+  qc3 <-
+    question_category(category = 'Initial test', adapt_images = TRUE) |>
+    define_questions_from_excel(file = file3)
+
+
+
+  expect_equal(df, df3)
+
+  expect_equal(df, df4)
+
+  expect_equal(df, df5)
+
   expect_equal(qc, qc2)
+
+  expect_equal(qc, qc3)
 
   expect_equal(qc,
                structure(
@@ -85,7 +109,7 @@ test_that("define_questions_from", {
                          "What are the basic arithmetic operations?",
                          "Match each operation with its symbol.",
                          "The square root is a basic arithmetic operation.",
-                         "What basic operation does it have as a \"+\" symbol?",
+                         "What basic operation does it have as a + symbol?",
                          "The symbol for addition is [[1]], the symbol for subtraction is [[2]].",
                          "The symbol for addition is [[1]], the symbol for subtraction is [[2]].",
                          "Sort the result from smallest to largest.",

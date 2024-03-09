@@ -106,7 +106,7 @@ qc <- qc |>
 ## -----------------------------------------------------------------------------
 qc <- qc |>
   define_question(
-    question = 'What basic operation does it have as a "+" symbol?',
+    question = 'What basic operation does it have as a + symbol?',
     answer = 'Addition'
   )
 

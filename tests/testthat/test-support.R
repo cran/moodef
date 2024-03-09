@@ -12,6 +12,20 @@ test_that("support", {
     system.file("extdata", "questions.csv", package = "moodef")
   df2 <- read_question_csv(file = file2)
 
+  file3 <- tempfile(fileext = '.xlsx')
+  f3 <- create_question_excel(file = file3)
+
+  file4 <-
+    system.file("extdata", "questions.xlsx", package = "moodef")
+  df3 <- read_question_excel(file = file4)
+  names(df3) <- names(df2)
+
+  df4 <- read_question_excel(file = file4, sheet_name = 'Hoja1')
+  names(df4) <- names(df2)
+
+  df5 <- read_question_excel(file = file4, sheet_index = 1)
+  names(df5) <- names(df2)
+
   expect_equal(s, "Addition<|>+")
   expect_equal(s2, "")
   expect_equal(s3, "")
@@ -34,6 +48,8 @@ test_that("support", {
 
   expect_equal(file, f)
 
+  expect_equal(file3, f3)
+
   expect_equal(nrow(df2), 11)
 
   expect_equal(names(df2),
@@ -43,9 +59,15 @@ test_that("support", {
                  "image",
                  "image_alt",
                  "answer",
-                 "6",
-                 "7",
-                 "8"
+                 "a_1",
+                 "a_2",
+                 "a_3"
                ))
+
+  expect_equal(df2, df3)
+
+  expect_equal(df2, df4)
+
+  expect_equal(df2, df5)
 
 })

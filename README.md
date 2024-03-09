@@ -4,12 +4,13 @@
 # moodef <img src="man/figures/logo.png" align="right" height="139" alt="" />
 
 <!-- badges: start -->
-<!-- [![CRAN status](https://www.r-pkg.org/badges/version/moodef)](https://CRAN.R-project.org/package=moodef) -->
 
+[![CRAN
+status](https://www.r-pkg.org/badges/version/moodef)](https://CRAN.R-project.org/package=moodef)
 [![R-CMD-check](https://github.com/josesamos/moodef/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/josesamos/moodef/actions/workflows/R-CMD-check.yaml)
 [![Codecov test
 coverage](https://codecov.io/gh/josesamos/moodef/branch/main/graph/badge.svg)](https://app.codecov.io/gh/josesamos/moodef?branch=main)
-<!-- [![Downloads](http://cranlogs.r-pkg.org/badges/grand-total/moodef?color=brightgreen)](https://www.r-pkg.org:443/pkg/moodef) -->
+[![Downloads](http://cranlogs.r-pkg.org/badges/grand-total/moodef?color=brightgreen)](https://www.r-pkg.org:443/pkg/moodef)
 <!-- badges: end -->
 
 The goal of the `moodef` package is to support the definition of
@@ -26,9 +27,10 @@ formats, including xml.
 Complementary, using the `moodef` package, we can define questionnaires
 from R. We have generalized 9 types of questions and simplified their
 definition. So, we define a question by calling a function or simply
-including a row in a data frame or a csv file. The result is an xml file
-that we import into *Moodle*. If necessary, some parameter not
-considered in the generalization can be defined or adjusted there.
+including a row in a data frame, a csv file or an *Excel* file. The
+result is an xml file that we import into *Moodle*. If necessary, some
+parameter not considered in the generalization can be defined or
+adjusted there.
 
 Although not shown in the next example, in each question we can include
 an image that is embedded in xml. We can set up the size of the images
@@ -131,16 +133,16 @@ We show the result below.
 
 We can call the `define_question` function for each question to be
 defined, with the same parameters. Alternatively, we can create a data
-frame or a csv file (with the functions available in the package) and
-include in them a row for each question, a column for each parameter.
-Below is the content of a csv file.
+frame, a csv file or an *Excel* file (with the functions available in
+the package) and include in them a row for each question, a column for
+each parameter. Below is the content of a csv file.
 
 ``` csv
-"type","question","image","image_alt","answer",,,
+"type","question","image","image_alt","answer","a_1","a_2","a_3"
 ,"What are the basic arithmetic operations?",,,"Addition, subtraction, multiplication and division.","Addition and subtraction.","Addition, subtraction, multiplication, division and square root.",
 ,"Match each operation with its symbol.",,,"Addition<|>+","Subtraction<|>-","Multiplication<|>*",
 ,"The square root is a basic arithmetic operation.",,,"False",,,
-,"What basic operation does it have as a ""+"" symbol?",,,"Addition",,,
+,"What basic operation does it have as a + symbol?",,,"Addition",,,
 ,"The symbol for addition is [[1]], the symbol for subtraction is [[2]].",,,"+","-",,
 "x","The symbol for addition is [[1]], the symbol for subtraction is [[2]].",,,"+","-",,
 "h","Sort the result from smallest to largest.",,,"6/2","6-2","6+2","6*2"
@@ -158,10 +160,6 @@ qc <- question_category(category = 'Initial test',
                         copyright = 'Copyright © 2024 Universidad de Granada',
                         license = 'License Creative Commons Attribution-ShareAlike 4.0') |>
   define_questions_from_csv(file = file)
-#> New names:
-#> • `` -> `...6`
-#> • `` -> `...7`
-#> • `` -> `...8`
 
 file <- tempfile(fileext = '.xml')
 qc <- qc |>
@@ -169,4 +167,5 @@ qc <- qc |>
 ```
 
 We do not show the content of the xml file obtained because in that
-example there are several questions defined.
+example there are several questions defined and it takes up a lot of
+space.

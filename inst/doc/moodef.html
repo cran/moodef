@@ -361,7 +361,7 @@ the process of manually defining the questions, considering only the
 essential parameters for each type. On the other hand, the package
 offers an infrastructure that allows the automatic or semi-automatic
 generation of questions from R: to define a question we simply need to
-include a row in a data frame or csv file.</p>
+include a row in a data frame, a csv file or an <em>Excel</em> file.</p>
 <p>The rest of this document is structured as follows: First, the
 general process of defining questions is presented. Next, we show the
 types of questions considered and how to define them. Finally, the
@@ -481,11 +481,11 @@ modified</strong>, only those that are embedded in the xml file.</p>
 </div>
 <div id="define-questions" class="section level2">
 <h2>Define questions</h2>
-<p>Once we have an <code>question_category</code> object created, we can
+<p>Once we have a <code>question_category</code> object created, we can
 define questions that are added to it.</p>
 <p>We can define the questions one by one using a definition function or
-in bulk using a data frame or a csv file. Below we show the
-possibilities offered.</p>
+in bulk using a data frame, a csv file or an <em>Excel</em> file. Below
+we show the possibilities offered.</p>
 <div id="definition-function" class="section level3">
 <h3>Definition function</h3>
 <p>The minimum we have to define about a question is its statement.
@@ -529,8 +529,8 @@ indicate the rest in a variable way with the parameter names we want (or
 without names, if we use all the defined parameters), as many as we need
 to include.</p>
 </div>
-<div id="definition-using-a-csv-file" class="section level3">
-<h3>Definition using a csv file</h3>
+<div id="definition-using-a-csv-file-or-an-excel-file" class="section level3">
+<h3>Definition using a csv file or an <em>Excel</em> file</h3>
 <p>We can create an empty csv file but with the necessary columns using
 the <code>create_question_csv()</code> function. In addition to the file
 name, we can also indicate the separator to use (<code>,</code> or
@@ -542,7 +542,7 @@ name, we can also indicate the separator to use (<code>,</code> or
 that file, we can include rows using a text editor, R or some tool to
 edit csv files in spreadsheet format.</p>
 <p>Below is the content of a csv file included in this package.</p>
-<pre class="csv"><code>&quot;type&quot;,&quot;question&quot;,&quot;image&quot;,&quot;image_alt&quot;,&quot;answer&quot;,,,
+<pre class="csv"><code>&quot;type&quot;,&quot;question&quot;,&quot;image&quot;,&quot;image_alt&quot;,&quot;answer&quot;,&quot;a_1&quot;,&quot;a_2&quot;,&quot;a_3&quot;
 ,&quot;What are the basic arithmetic operations?&quot;,,,&quot;Addition, subtraction, multiplication and division.&quot;,&quot;Addition and subtraction.&quot;,&quot;Addition, subtraction, multiplication, division and square root.&quot;,
 ,&quot;Match each operation with its symbol.&quot;,,,&quot;Addition&lt;|&gt;+&quot;,&quot;Subtraction&lt;|&gt;-&quot;,&quot;Multiplication&lt;|&gt;*&quot;,
 ,&quot;The square root is a basic arithmetic operation.&quot;,,,&quot;False&quot;,,,
@@ -558,11 +558,7 @@ edit csv files in spreadsheet format.</p>
 <code>define_questions_from_csv()</code> function, as shown below.</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>file <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;questions.csv&quot;</span>, <span class="at">package =</span> <span class="st">&quot;moodef&quot;</span>)</span>
 <span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>qc <span class="ot">&lt;-</span> qc <span class="sc">|&gt;</span></span>
-<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>  <span class="fu">define_questions_from_csv</span>(file)</span>
-<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a><span class="co">#&gt; New names:</span></span>
-<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a><span class="co">#&gt; • `` -&gt; `...6`</span></span>
-<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a><span class="co">#&gt; • `` -&gt; `...7`</span></span>
-<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a><span class="co">#&gt; • `` -&gt; `...8`</span></span></code></pre></div>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>  <span class="fu">define_questions_from_csv</span>(file)</span></code></pre></div>
 <p>There are types of questions in which two string values must be
 indicated for each answer. The criterion we have adopted to include two
 values in a cell is to use a separator and define them in a single
@@ -572,6 +568,10 @@ definition of some of the previous questions, for example,
 <p>In this example, questions with images have not been included due to
 the difficulty of referencing the image files in the package from the
 csv file, but they can be included without any problem.</p>
+<p>For <em>Excel</em> files the definition is carried out in the same
+way. The corresponding functions are:
+<code>create_question_excel()</code> and
+<code>define_questions_from_excel()</code>.</p>
 </div>
 <div id="definition-using-a-data-frame" class="section level3">
 <h3>Definition using a data frame</h3>
@@ -581,11 +581,7 @@ function or read one from a csv file using the
 <code>read_question_csv()</code> function. In this case we are going to
 read one that contains images in the statements.</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>file <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">&quot;extdata&quot;</span>, <span class="st">&quot;questions_image.csv&quot;</span>, <span class="at">package =</span> <span class="st">&quot;moodef&quot;</span>)</span>
-<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">read_question_csv</span>(<span class="at">file =</span> file)</span>
-<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a><span class="co">#&gt; New names:</span></span>
-<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a><span class="co">#&gt; • `` -&gt; `...6`</span></span>
-<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a><span class="co">#&gt; • `` -&gt; `...7`</span></span>
-<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a><span class="co">#&gt; • `` -&gt; `...8`</span></span></code></pre></div>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">read_question_csv</span>(<span class="at">file =</span> file)</span></code></pre></div>
 <p>The content of the data frame is shown below.</p>
 <div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a>pander<span class="sc">::</span><span class="fu">pandoc.table</span>(df, <span class="at">split.table =</span> <span class="cn">Inf</span>)</span></code></pre></div>
 <table>
@@ -606,9 +602,9 @@ read one that contains images in the statements.</p>
 <th align="center">image</th>
 <th align="center">image_alt</th>
 <th align="center">answer</th>
-<th align="center">6</th>
-<th align="center">7</th>
-<th align="center">8</th>
+<th align="center">a_1</th>
+<th align="center">a_2</th>
+<th align="center">a_3</th>
 </tr>
 </thead>
 <tbody>
@@ -671,7 +667,7 @@ in the <em>Question Bank</em> section.</p>
 <p>If we have included images, the file size increases considerably
 because they are embedded in xml (not referenced).</p>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a><span class="fu">file.size</span>(file)</span>
-<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a><span class="co">#&gt; [1] 217257</span></span></code></pre></div>
+<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a><span class="co">#&gt; [1] 217255</span></span></code></pre></div>
 <p>The definition file for a single question is shown below.</p>
 <div class="sourceCode" id="cb18"><pre class="sourceCode xml"><code class="sourceCode xml"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a><span class="fu">&lt;?xml</span><span class="ot"> version=</span><span class="st">&quot;1.0&quot;</span><span class="ot"> encoding=</span><span class="st">&quot;UTF-8&quot;</span><span class="fu">?&gt;</span></span>
 <span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a>&lt;<span class="kw">quiz</span>&gt;</span>
@@ -776,7 +772,7 @@ or numeric value, it is of type <code>shortanswer</code>, for
 example:</p>
 <div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" tabindex="-1"></a>qc <span class="ot">&lt;-</span> qc <span class="sc">|&gt;</span></span>
 <span id="cb22-2"><a href="#cb22-2" tabindex="-1"></a>  <span class="fu">define_question</span>(</span>
-<span id="cb22-3"><a href="#cb22-3" tabindex="-1"></a>    <span class="at">question =</span> <span class="st">&#39;What basic operation does it have as a &quot;+&quot; symbol?&#39;</span>,</span>
+<span id="cb22-3"><a href="#cb22-3" tabindex="-1"></a>    <span class="at">question =</span> <span class="st">&#39;What basic operation does it have as a + symbol?&#39;</span>,</span>
 <span id="cb22-4"><a href="#cb22-4" tabindex="-1"></a>    <span class="at">answer =</span> <span class="st">&#39;Addition&#39;</span></span>
 <span id="cb22-5"><a href="#cb22-5" tabindex="-1"></a>  )</span></code></pre></div>
 </div>
