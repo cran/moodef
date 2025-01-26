@@ -14,7 +14,9 @@ question_category(
   incorrect_feedback = "Incorrect.",
   adapt_images = FALSE,
   width = 800,
-  height = 600
+  height = 600,
+  author = "",
+  fraction = 0
 )
 }
 \arguments{
@@ -41,6 +43,11 @@ to each question.}
 \item{width}{A integer, width of each image.}
 
 \item{height}{A integer, height of each image.}
+
+\item{author}{A string, author name to be included in each question that is
+defined.}
+
+\item{fraction}{A number between 0 and 1.}
 }
 \value{
 A \code{question_category} object.
@@ -58,6 +65,12 @@ correct, partially correct and incorrect questions.
 Each question can include an image after the text. We can also configure if
 we want to automatically transform the images so that they have a standard
 size that we can also indicate.
+
+The \code{fraction} attribute is used in various question types to determine how a
+specific answer impacts the question's score. Specifically, for incorrect answers
+in the \code{multichoice} and \code{truefalse} types, the value calculated by dividing
+\code{fraction} by the number of incorrect answers available is considered as the
+amount deducted in case of an incorrect response.
 }
 \examples{
 
@@ -65,7 +78,8 @@ qc <- question_category(category = 'Initial test')
 
 }
 \seealso{
-Other question definition: 
+Other question definition functions: 
+\code{\link{define_extended_question}()},
 \code{\link{define_question}()},
 \code{\link{define_questions_from_csv}()},
 \code{\link{define_questions_from_data_frame}()},
@@ -73,4 +87,4 @@ Other question definition:
 \code{\link{generate_xml}()},
 \code{\link{generate_xml_file}()}
 }
-\concept{question definition}
+\concept{question definition functions}

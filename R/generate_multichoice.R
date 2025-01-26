@@ -3,43 +3,67 @@
 #' Generate `multichoice` question
 #'
 #' @param answer A string.
-#' @param n An integer, number or answers.
-#' @param rest A vector, rest of answers.
+#' @param a_values A vector, rest of answers.
 #' @param correct_feedback A string.
 #' @param incorrect_feedback A string.
+#' @param fb_partially A string.
+#' @param fb_answer A string, answer feedback.
+#' @param fb_a_values A vector, rest of answer feedback.
+#' @param fraction A number between 0 and 1.
 #'
 #' @return A string.
 #' @keywords internal
 generate_multichoice <-
   function(answer,
-           n,
-           rest,
+           a_values,
            correct_feedback,
-           incorrect_feedback) {
+           incorrect_feedback,
+           fb_partially,
+           fb_answer,
+           fb_a_values,
+           fraction) {
+
+    if (fb_answer != '') {
+      answer_feedback <- fb_answer
+    } else {
+      answer_feedback <- correct_feedback
+    }
+
     question <- glue::glue(
       '
 
-    <defaultgrade>1.0000000</defaultgrade>
-    <penalty>0.5</penalty>
-    <hidden>0</hidden>
-    <idnumber></idnumber>
     <single>true</single>
     <shuffleanswers>true</shuffleanswers>
-    <answernumbering>abc</answernumbering>
+    <answernumbering>none</answernumbering>
     <showstandardinstruction>0</showstandardinstruction>
     <correctfeedback format="moodle_auto_format"> <text>{correct_feedback}</text> </correctfeedback>
-    <partiallycorrectfeedback format="moodle_auto_format"> <text></text> </partiallycorrectfeedback>
+    <partiallycorrectfeedback format="moodle_auto_format"> <text>{fb_partially}</text> </partiallycorrectfeedback>
     <incorrectfeedback format="moodle_auto_format"> <text>{incorrect_feedback}</text> </incorrectfeedback>
     <answer fraction="100" format="html">
        <text>{answer}</text>
-       <feedback format="html"> <text>{correct_feedback}</text> </feedback>
+       <feedback format="html"> <text>{answer_feedback}</text> </feedback>
     </answer>
 '
     )
 
-    value <- sprintf("-%2.15f", 100 / n)
+    n <- length(a_values)
+
+    if (fraction == 0) {
+      value <- "0"
+    } else {
+      value <- sprintf("-%2.15f", 100 * fraction / n)
+    }
+
     others <- NULL
-    for (r in rest) {
+    i <- 1
+    for (r in a_values) {
+      if (!is.null(fb_a_values[i])) {
+        fb <- fb_a_values[i]
+      } else {
+        fb <- incorrect_feedback
+      }
+      i <- i + 1
+
       others <- paste0 (
         others,
         glue::glue(
@@ -47,7 +71,7 @@ generate_multichoice <-
 
     <answer fraction="{value}" format="html">
        <text>{r}</text>
-       <feedback format="html"> <text>{incorrect_feedback}</text> </feedback>
+       <feedback format="html"> <text>{fb}</text> </feedback>
     </answer>
 '
         )

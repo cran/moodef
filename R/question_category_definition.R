@@ -12,7 +12,7 @@
 #'
 #' @return A `question_category`.
 #'
-#' @family question definition
+#' @family question definition functions
 #'
 #' @examples
 #'
@@ -30,44 +30,25 @@ define_questions_from_data_frame <- function(qc, df)
 #' @rdname define_questions_from_data_frame
 #' @export
 define_questions_from_data_frame.question_category <- function(qc, df) {
-  attributes <- names(df)
-  df[, attributes] <- data.frame(lapply(df[, attributes], as.character), stringsAsFactors = FALSE)
-  df[, attributes] <-
-    apply(df[, attributes, drop = FALSE], 2, function(x)
-      tidyr::replace_na(x, ''))
-  attributes <- snakecase::to_snake_case(attributes)
-  names(df) <- attributes
-  for (opcional in c('type', 'image', 'image_alt')) {
-    if (!(opcional %in% attributes)) {
-      df[, opcional] <- ''
-    }
+
+  df <- process_question_dataframe(df)
+
+  q_df <- create_default_value_question_df()
+  q_df$fraction <- ''
+
+  additional_fields <- setdiff(names(df), names(q_df))
+  if (length(additional_fields) > 0) {
+    stop(paste("The data frame contains additional fields not allowed:",
+               paste(additional_fields, collapse = ", ")))
   }
-  rest <- setdiff(attributes, c("type", "question", "image", "image_alt", "answer"))
-  for (i in 1:nrow(df)) {
-    text <- paste0(
-      'define_question(qc, type = "',
-      df[i, 'type'],
-      '", question = "',
-      df[i, 'question'],
-      '", image = "',
-      df[i, 'image'],
-      '", image_alt = "',
-      df[i, 'image_alt'],
-      '", answer = ',
-      string_to_string_vector(df[i, 'answer'][[1]])
-    )
-    j <- 0
-    for (r in rest) {
-      if (df[i, r][[1]] != '') {
-        j <- j + 1
-        text <- paste0(text,
-                       ", a_", j, " = ", string_to_string_vector(df[i, r][[1]]))
-      }
-    }
-    text <- paste0(text, ")")
-    qc <- eval(parse(text = text))
+  # Copy the columns from df
+  q_df <- do.call(rbind, replicate(nrow(df), q_df, simplify = FALSE))
+  for (col in names(df)) {
+    q_df[[col]] <- df[[col]]
   }
-  qc
+
+  df <- rbind(qc$questions, q_df)
+  define_questions_from_df(qc, df)
 }
 
 
@@ -86,7 +67,7 @@ define_questions_from_data_frame.question_category <- function(qc, df) {
 #'
 #' @return A `question_category`.
 #'
-#' @family question definition
+#' @family question definition functions
 #'
 #' @examples
 #'
@@ -101,12 +82,9 @@ define_questions_from_csv <- function(qc, file, sep)
 
 #' @rdname define_questions_from_csv
 #' @export
-define_questions_from_csv.question_category <- function(qc, file, sep = ',') {
-  df <- readr::read_delim(
-    file,
-    delim = sep,
-    col_types = readr::cols(.default = readr::col_character())
-  )
+define_questions_from_csv.question_category <- function(qc, file,
+                                                        sep = ',') {
+  df <- read_question_csv(file, sep)
   define_questions_from_data_frame(qc, df)
 }
 
@@ -131,7 +109,7 @@ define_questions_from_csv.question_category <- function(qc, file, sep = ',') {
 #'
 #' @return A `question_category`.
 #'
-#' @family question definition
+#' @family question definition functions
 #'
 #' @examples
 #'
@@ -155,20 +133,6 @@ define_questions_from_excel.question_category <- function(qc,
                                                           file,
                                                           sheet_index = NULL,
                                                           sheet_name = NULL) {
-  if (is.null(sheet_index) & is.null(sheet_name)) {
-    sheet_name <- readxl::excel_sheets(file)
-  } else if (is.null(sheet_name)) {
-    sheet_name <- readxl::excel_sheets(file)[sheet_index]
-  }
-  sheet_name <- sheet_name[1]
-  df <- suppressMessages(
-    readxl::read_excel(
-      file,
-      sheet = sheet_name,
-      col_names = TRUE,
-      col_types = "text",
-      trim_ws = TRUE
-    )
-  )
+  df <- read_question_excel(file, sheet_index, sheet_name)
   define_questions_from_data_frame(qc, df)
 }

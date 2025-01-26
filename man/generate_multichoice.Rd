@@ -4,18 +4,33 @@
 \alias{generate_multichoice}
 \title{Generate \code{multichoice} question}
 \usage{
-generate_multichoice(answer, n, rest, correct_feedback, incorrect_feedback)
+generate_multichoice(
+  answer,
+  a_values,
+  correct_feedback,
+  incorrect_feedback,
+  fb_partially,
+  fb_answer,
+  fb_a_values,
+  fraction
+)
 }
 \arguments{
 \item{answer}{A string.}
 
-\item{n}{An integer, number or answers.}
-
-\item{rest}{A vector, rest of answers.}
+\item{a_values}{A vector, rest of answers.}
 
 \item{correct_feedback}{A string.}
 
 \item{incorrect_feedback}{A string.}
+
+\item{fb_partially}{A string.}
+
+\item{fb_answer}{A string, answer feedback.}
+
+\item{fb_a_values}{A vector, rest of answer feedback.}
+
+\item{fraction}{A number between 0 and 1.}
 }
 \value{
 A string.
